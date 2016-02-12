@@ -391,6 +391,8 @@ def create_blueprint(import_name, blogging_engine):
 
     blog_app = Blueprint("blogging", import_name, template_folder='templates')
 
+    config = blogging_engine.config
+
     # register index
     index_func = cached_func(blogging_engine, index)
     blog_app.add_url_rule("/", defaults={"count": None, "page": 1},
@@ -407,13 +409,15 @@ def create_blueprint(import_name, blogging_engine):
                           view_func=page_by_id_func)
 
     # register posts_by_tag
-    posts_by_tag_func = cached_func(blogging_engine, posts_by_tag)
-    blog_app.add_url_rule("/tag/<tag>/", defaults=dict(count=None, page=1),
-                          view_func=posts_by_tag_func)
-    blog_app.add_url_rule("/tag/<tag>/<int:count>/", defaults=dict(page=1),
-                          view_func=posts_by_tag_func)
-    blog_app.add_url_rule("/tag/<tag>/<int:count>/<int:page>/",
-                          view_func=posts_by_tag_func)
+    tags = config.get("BLOGGING_TAGS", True)
+    if tags:
+        posts_by_tag_func = cached_func(blogging_engine, posts_by_tag)
+        blog_app.add_url_rule("/tag/<tag>/", defaults=dict(count=None, page=1),
+                              view_func=posts_by_tag_func)
+        blog_app.add_url_rule("/tag/<tag>/<int:count>/", defaults=dict(page=1),
+                              view_func=posts_by_tag_func)
+        blog_app.add_url_rule("/tag/<tag>/<int:count>/<int:page>/",
+                              view_func=posts_by_tag_func)
 
     # register posts_by_author
     posts_by_author_func = cached_func(blogging_engine, posts_by_author)
