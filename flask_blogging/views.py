@@ -403,9 +403,9 @@ def create_blueprint(import_name, blogging_engine):
 
     # register page_by_id
     page_by_id_func = cached_func(blogging_engine, page_by_id)
-    blog_app.add_url_rule("/page/<int:post_id>/", defaults={"slug": ""},
+    blog_app.add_url_rule("/post/<int:post_id>/", defaults={"slug": ""},
                           view_func=page_by_id_func)
-    blog_app.add_url_rule("/page/<int:post_id>/<slug>/",
+    blog_app.add_url_rule("/post/<int:post_id>/<slug>/",
                           view_func=page_by_id_func)
 
     # register posts_by_tag
